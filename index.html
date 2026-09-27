@@ -1247,7 +1247,7 @@ class Component extends DCLogic {
     cv.volume = Math.min(Math.max((volPct || 70) / 100, 0), 1);
     cv.muted = false;
     const r = rate || 1;
-    const setR = () => { cv.defaultPlaybackRate = r; cv.playbackRate = r; if(r !== 1){ cv.preservesPitch = false; cv.webkitPreservesPitch = false; } else { cv.preservesPitch = true; cv.webkitPreservesPitch = true; } };
+    const setR = () => { if(r !== 1){ cv.defaultPlaybackRate = r; cv.playbackRate = r; cv.preservesPitch = false; cv.webkitPreservesPitch = false; } };
     setR();
     /* retoma en el punto donde iba el preview, no desde el principio */
     const resume = () => { try { cv.currentTime = startAt || 0; } catch(e){} };
@@ -1272,10 +1272,12 @@ class Component extends DCLogic {
       v.muted = true; v.loop = true;
       /* algunos clips se comprimieron acelerados: se reproducen a su velocidad real */
       const rate = Number(v.dataset.rate) || 1;
-      const applyRate = () => { v.defaultPlaybackRate = rate; v.playbackRate = rate; if(rate !== 1){ v.preservesPitch = false; v.webkitPreservesPitch = false; } else { v.preservesPitch = true; v.webkitPreservesPitch = true; } };
-      applyRate();
-      v.addEventListener('loadedmetadata', applyRate);
-      v.addEventListener('play', applyRate);
+      if(rate !== 1){
+        const applyRate = () => { v.defaultPlaybackRate = rate; v.playbackRate = rate; v.preservesPitch = false; v.webkitPreservesPitch = false; };
+        applyRate();
+        v.addEventListener('loadedmetadata', applyRate);
+        v.addEventListener('play', applyRate);
+      }
 
       /* solo reproduce el que se ve: evita que 5 clips compitan por el ancho de banda */
       v.preload = 'auto';
