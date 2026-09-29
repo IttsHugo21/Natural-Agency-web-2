@@ -813,6 +813,37 @@
     footer .footer-legal{gap:1rem 1.2rem}
   }
 </style>
+<script>
+(function(){
+  function fix(v){
+    if(v.__fx) return; v.__fx = 1;
+    v.muted = true; v.defaultMuted = true; v.setAttribute('muted','');
+    v.playsInline = true; v.setAttribute('playsinline',''); v.setAttribute('webkit-playsinline','');
+    v.loop = true; v.autoplay = true; v.preload = 'auto';
+    var src = v.getAttribute('src') || '';
+    var m = src.match(/\/([a-z-]+)\.mp4/i);
+    if(!v.getAttribute('poster') && m) v.setAttribute('poster','assets/' + m[1] + '-poster.png');
+    var tries = 0;
+    v.addEventListener('error', function(){
+      var s = v.getAttribute('src') || '';
+      if(tries === 0 && /\/upload\/[^v][^/]*\//.test(s)){ tries = 1; v.src = s.replace(/\/upload\/[^v][^/]*\//, '/upload/'); v.load(); go(v); }
+    });
+    go(v);
+  }
+  function go(v){ try{ var p = v.play(); if(p && p.catch) p.catch(function(){}); }catch(e){} }
+  function scan(){
+    var vs = document.querySelectorAll('video.ad-gif');
+    for(var i=0;i<vs.length;i++){ fix(vs[i]); if(vs[i].paused && vs[i].offsetParent !== null && !vs[i].closest('.ad-slot').__userPaused) go(vs[i]); }
+  }
+  new MutationObserver(scan).observe(document.documentElement, {childList:true, subtree:true});
+  document.addEventListener('click', function(e){
+    if(e.target.closest && e.target.closest('.ad-play')){ var s = e.target.closest('.ad-slot'); var v = s && s.querySelector('video'); if(s && v) s.__userPaused = !v.paused; return; }
+    setTimeout(scan, 60); setTimeout(scan, 500);
+  }, true);
+  document.addEventListener('touchstart', function(){ setTimeout(scan, 60); }, {passive:true, capture:true});
+  setInterval(scan, 1500);
+})();
+</script>
 </helmet>
 
 <div class="cursor-ring" id="ring"></div>
