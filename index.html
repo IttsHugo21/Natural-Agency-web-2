@@ -1017,6 +1017,9 @@
       <img src="assets/pr-web-d-ng.jpg" alt="Web de peluquería">
     </div>
     <div class="pr-cta"><a class="gloss-btn" href="#agenda">Consultoria Gratuita</a></div>
+    <div class="pr-mnav">
+      <button type="button" class="pr-mnav__btn pr-mnav__btn--ghost" data-pop="prPop2" onClick="{{ toggleMorePop }}">Ver más proyectos</button>
+    </div>
   </div>
 </section>
 
@@ -1066,6 +1069,13 @@
 
 </div>
 
+  </div>
+  <div class="pr-pop" id="prPop2" onClick="{{ closeMorePop }}">
+    <div class="pr-pop__card">
+      <div class="pr-pop__title">¿Qué quieres ver?</div>
+      <button type="button" class="pr-pop__btn" data-goto="0" onClick="{{ gotoServ }}">Creación de contenido</button>
+      <button type="button" class="pr-pop__btn" data-goto="2" onClick="{{ gotoServ }}">Automatización de procesos</button>
+    </div>
   </div>
   <div class="pr-pop" id="prPop" onClick="{{ closeMorePop }}">
     <div class="pr-pop__card">
@@ -1680,19 +1690,18 @@ class Component extends DCLogic {
       gotoServ: (e) => {
         e.stopPropagation();
         const b = e.currentTarget;
-        const pop = document.getElementById('prPop');
-        if(pop) pop.classList.remove('is-open');
+        document.querySelectorAll('.pr-pop.is-open').forEach(p => p.classList.remove('is-open'));
         const sPop = document.getElementById('servPop');
         if(sPop) sPop.classList.remove('is-open');
         this.openServ(Number(b.dataset.goto) || 0);
       },
       toggleMorePop: (e) => {
         e.stopPropagation();
-        const pop = document.getElementById('prPop');
+        const pop = document.getElementById(e.currentTarget.dataset.pop || 'prPop');
         if(pop) pop.classList.add('is-open');
       },
       closeMorePop: (e) => {
-        if(e.target.id === 'prPop') e.currentTarget.classList.remove('is-open');
+        if(e.target === e.currentTarget) e.currentTarget.classList.remove('is-open');
       },
       toggleServPop: (e) => {
         e.stopPropagation();
