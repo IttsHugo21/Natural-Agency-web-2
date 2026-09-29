@@ -15,7 +15,7 @@
   (function (C, A, L) { let p = function (a, ar) { a.q.push(ar); }; let d = C.document; C.Cal = C.Cal || function () { let cal = C.Cal; let ar = arguments; if (!cal.loaded) { cal.ns = {}; cal.q = cal.q || []; d.head.appendChild(d.createElement("script")).src = A; cal.loaded = true; } if (ar[0] === L) { const api = function () { p(api, arguments); }; const namespace = ar[1]; api.q = api.q || []; if(typeof namespace === "string"){cal.ns[namespace] = cal.ns[namespace] || api;p(cal.ns[namespace], ar);p(cal, ["initNamespace", namespace]);} else p(cal, ar); return;} p(cal, ar); }; })(window, "https://app.cal.com/embed/embed.js", "init");
   Cal("init", "consultoriagratuita", {origin:"https://app.cal.com"});
   Cal.config = Cal.config || {};
-  Cal.config.forwardQueryParams = true;x
+  Cal.config.forwardQueryParams = true;
 </script>
 
 <style>
@@ -1029,7 +1029,7 @@
       </div>
     </div>
     <div class="pr-mnav">
-      <button type="button" class="pr-mnav__btn pr-mnav__btn--ghost" data-goto="1" onClick="{{ gotoServ }}">Siguiente: Diseño web →</button>
+      <button type="button" class="pr-mnav__btn pr-mnav__btn--ghost" onClick="{{ toggleContPop }}">Ver más proyectos</button>
       <a class="gloss-btn pr-mnav__btn" href="#agenda">Consultoria Gratuita</a>
     </div>
   </div>
@@ -1107,6 +1107,13 @@
       <div class="pr-pop__title">¿Qué quieres ver?</div>
       <button type="button" class="pr-pop__btn" data-goto="0" onClick="{{ gotoServ }}">Creación de contenido</button>
       <button type="button" class="pr-pop__btn" data-goto="1" onClick="{{ gotoServ }}">Diseño y desarrollo web</button>
+    </div>
+  </div>
+  <div class="pr-pop" id="prPopCont" onClick="{{ closeMorePop }}">
+    <div class="pr-pop__card">
+      <div class="pr-pop__title">¿Qué quieres ver?</div>
+      <button type="button" class="pr-pop__btn" data-goto="1" onClick="{{ gotoServ }}">Diseño y desarrollo web</button>
+      <button type="button" class="pr-pop__btn" data-goto="2" onClick="{{ gotoServ }}">Automatización de procesos</button>
     </div>
   </div>
   <div class="pr-pop" id="prPopWeb" onClick="{{ closeMorePop }}">
@@ -1734,6 +1741,8 @@ class Component extends DCLogic {
         if(pop) pop.classList.remove('is-open');
         const wPop = document.getElementById('prPopWeb');
         if(wPop) wPop.classList.remove('is-open');
+        const cPop = document.getElementById('prPopCont');
+        if(cPop) cPop.classList.remove('is-open');
         const sPop = document.getElementById('servPop');
         if(sPop) sPop.classList.remove('is-open');
         this.openServ(Number(b.dataset.goto) || 0);
@@ -1745,6 +1754,11 @@ class Component extends DCLogic {
       },
       closeMorePop: (e) => {
         if(e.target === e.currentTarget) e.currentTarget.classList.remove('is-open');
+      },
+      toggleContPop: (e) => {
+        e.stopPropagation();
+        const pop = document.getElementById('prPopCont');
+        if(pop) pop.classList.add('is-open');
       },
       toggleWebPop: (e) => {
         e.stopPropagation();
