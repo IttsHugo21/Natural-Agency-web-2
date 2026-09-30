@@ -731,7 +731,7 @@
     }
     .mobile-menu.open{opacity:1;pointer-events:auto;transform:none}
     .mobile-menu a{font-size:1.5rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink);text-decoration:none}
-    #hero{padding:max(9vh,74px) 6vw 6vh;min-height:auto;align-items:flex-start}
+    #hero{padding:74px 6vw 4vh;min-height:100svh;align-items:center}
     .hero-btn{padding:.9rem 1.7rem;font-size:.9rem}
   }
   footer{padding:6vh 6vw;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;font-size:.8rem;color:var(--ink-60);letter-spacing:.04em}
@@ -789,7 +789,7 @@
     .service-col .svc-list{text-align:left}
   }
   @media (max-width:680px){
-    .hero-desc .hd-line:last-child{font-size:.87em}
+    .hero-desc .hd-line{font-size:.87em}
     .brand-mark{height:20px;max-width:62vw;margin:0}
     .site-header{padding:.95rem 4vw}
     .site-header.is-compact{padding:.95rem 4vw;box-shadow:none}
@@ -1134,7 +1134,7 @@
 <section id="conocenos" data-screen-label="Conocenos">
   <h2 class="conoce-title">Conócenos</h2>
   <div class="video-frame reveal-up" style="background:#0d0d0d">
-    <video controls="controls" playsinline="playsinline" webkit-playsinline="webkit-playsinline" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0d0d0d" src="https://res.cloudinary.com/q0dtwgva/video/upload/q_auto,vc_h264,w_1920,c_limit/v1790721141/Video_Web_4K._Bien_1_1_1.mp4" onError="{{ conoceFallback }}"></video>
+    <video id="conoceVideo" controls="controls" muted="muted" loop="loop" playsinline="playsinline" webkit-playsinline="webkit-playsinline" preload="metadata" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;background:#0d0d0d" src="https://res.cloudinary.com/q0dtwgva/video/upload/q_auto,vc_h264,w_1920,c_limit/v1790721141/Video_Web_4K._Bien_1_1_1.mp4" onError="{{ conoceFallback }}"></video>
   </div>
   <a class="gloss-btn" href="#agenda">Agendar consultoria ahora</a>
 </section>
@@ -1221,6 +1221,17 @@ class Component extends DCLogic {
     this.initAdGifs();
     this.initCountUp();
     this.initCal();
+    this.initConoceAutoplay();
+  }
+
+  initConoceAutoplay(){
+    const v = document.getElementById('conoceVideo');
+    if(!v) return;
+    v.muted = true; v.defaultMuted = true;
+    new IntersectionObserver(es => es.forEach(en => {
+      if(en.isIntersecting){ const p = v.play(); if(p && p.catch) p.catch(()=>{}); }
+      else if(!v.paused) v.pause();
+    }), { threshold: 0.4 }).observe(v);
   }
 
   componentDidUpdate(){
